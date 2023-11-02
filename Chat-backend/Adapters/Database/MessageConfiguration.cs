@@ -10,7 +10,7 @@ namespace Chat_backend.Adapters.Database
         {
             builder.Property(message => message.Id).IsRequired().HasDefaultValueSql("gen_random_uuid()"); 
             builder.Property(message => message.Content).IsRequired();
-            builder.Property(message => message.SenderId).IsRequired(); 
+            builder.Property(message => message.UserId).IsRequired(); 
             builder.Property(message => message.ChatId).IsRequired();
         }
     }

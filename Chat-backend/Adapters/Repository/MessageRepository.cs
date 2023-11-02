@@ -20,7 +20,7 @@ namespace Chat_backend.Adapters.Repository
             var newMessage = new Message
             {
                 ChatId = message.ChatId,
-                SenderId = message.SenderId,    
+                UserId = message.UserId,    
                 Content = message.Content,
             };
             await dbSet.AddAsync(newMessage);

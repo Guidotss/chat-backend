@@ -67,3 +67,4 @@ C:\Users\Administrator\Desktop\Chat-backend\Chat-backend\obj\Debug\net7.0\refint
 C:\Users\Administrator\Desktop\Chat-backend\Chat-backend\obj\Debug\net7.0\Chat-backend.pdb
 C:\Users\Administrator\Desktop\Chat-backend\Chat-backend\obj\Debug\net7.0\Chat-backend.genruntimeconfig.cache
 C:\Users\Administrator\Desktop\Chat-backend\Chat-backend\obj\Debug\net7.0\ref\Chat-backend.dll
+C:\Users\Administrator\Desktop\Chat-backend\Chat-backend\bin\Debug\net7.0\BCrypt.Net-Next.dll

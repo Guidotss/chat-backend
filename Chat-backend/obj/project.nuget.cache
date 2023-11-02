@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "jr+dCJFLDVVQv4xk8/84Pn6q3TjZENcwjlshbnGeNjUj3gxFaaqHTWbvtT8X7oMfluvaESf7dr6L+KYuhdhMVg==",
+  "dgSpecHash": "QRqYhFIqlob3KVKmpH99SRpvdJfdhO1RFJ5kLkSlHw0vgVpsZSKSQvfNzD8uHK+Zdz82q0O+lAQj2+2xfrfNhA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Administrator\\Desktop\\Chat-backend\\Chat-backend\\Chat-backend.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Administrator\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.13\\microsoft.aspnetcore.authentication.jwtbearer.7.0.13.nupkg.sha512",

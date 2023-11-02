@@ -1,4 +1,5 @@
 ﻿using Chat_backend.Entities;
+using Chat_backend.Interfaces.Dtos;
 
 namespace Chat_backend.Interfaces
 {
@@ -6,7 +7,7 @@ namespace Chat_backend.Interfaces
     {
         abstract Task<IEnumerable<Chat>> GetAllChats();
         abstract Task<Chat> GetChatById(int id);
-        abstract Task<Chat> CreateChat(Chat chat);
+        abstract Task<Chat> CreateChat(NewChatDto chat);
         abstract Task<Chat> UpdateChat(Chat chat);
         abstract void DeleteChat(Guid id);
         abstract Task AddUserToChat(Guid chatId, Guid userId);

@@ -15,6 +15,8 @@ var connectionString = builder.Configuration["ConnectionString"] ?? throw new Ex
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<IMessageRepository, MessageRespository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>(); 
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
 
 var app = builder.Build();

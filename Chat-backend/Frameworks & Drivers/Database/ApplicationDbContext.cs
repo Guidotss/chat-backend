@@ -11,6 +11,7 @@ namespace Chat_backend.Frameworks___Drivers.Database
         public DbSet<Chat> Chat { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<ChatUser> ChatUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

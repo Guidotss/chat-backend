@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QRqYhFIqlob3KVKmpH99SRpvdJfdhO1RFJ5kLkSlHw0vgVpsZSKSQvfNzD8uHK+Zdz82q0O+lAQj2+2xfrfNhA==",
+  "dgSpecHash": "/ChOiaWoLh0FirUIfwQjW83Y62jg7HCrk1dh3oYIl9A9hEpAEDp9oNdX6sOx9jC8IZwI18rBZYaKS5Md0h9Tew==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Administrator\\Desktop\\Chat-backend\\Chat-backend\\Chat-backend.csproj",
+  "projectFilePath": "C:\\Users\\Administrator\\Desktop\\chat-backend\\Chat-backend\\Chat-backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",

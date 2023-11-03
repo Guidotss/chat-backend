@@ -1,4 +1,5 @@
-﻿using Chat_backend.Interfaces;
+﻿using Chat_backend.Adapters.Errors;
+using Chat_backend.Interfaces;
 using Chat_backend.Interfaces.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
@@ -7,7 +8,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Chat_backend.Frameworks___Drivers.Controllers
 {
@@ -25,10 +25,25 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
         }
         private IActionResult HandleErrors(Exception ex)
         {
+            if(ex is HttpError httpError)
+            {
+                return StatusCode(httpError.StatusCode, new { ok = false, message = httpError.Message });
+            }
+
             return ex switch
             {
                 _ => StatusCode(500, new { ok = false, message = "Internal server errror", error = ex.Message })
             }; 
+        }
+
+        private Guid CheckUUID(string id)
+        {
+            bool isValid = Guid.TryParse(id, out Guid result); 
+            if(!isValid)
+            {
+                throw new Exception("Invalid UUID");
+            }
+            return result;
         }
 
         private async Task HandleWebSocketConnection(WebSocket webSocket)
@@ -86,6 +101,44 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
             }catch(Exception ex)
             {
                 return HandleErrors(ex);
+            }
+        }
+
+        [HttpPost]
+        [Route("add-user")]
+        public async Task<IActionResult> AddUserToChat([FromBody] AddUserToChatDto newUser) 
+        {
+            try
+            {
+                await _chatRepository.AddUserToChat(newUser.ChatId, newUser.UserId);
+                return Ok(new { ok = true, message = "User added to chat" });
+            }catch(Exception ex)
+            {
+                return HandleErrors(ex); 
+            }
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetChatById()
+        {
+            string id = HttpContext.Request.RouteValues["id"]?.ToString()!;
+            try
+            {
+                Guid idParsed = CheckUUID(id);
+                var chat = await _chatRepository.GetChatById(idParsed);
+                if(chat == null)
+                {
+                    return BadRequest(new { ok = false, message = "Chat not found" });
+                }
+                
+                
+    
+                return Ok(new { ok = true,chat });
+
+            }catch(Exception ex)
+            {
+                return HandleErrors(ex); 
             }
         }
         

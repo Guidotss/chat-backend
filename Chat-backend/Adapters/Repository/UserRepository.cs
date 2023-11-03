@@ -31,7 +31,7 @@ namespace Chat_backend.Adapters.Repository
                 Username = user.UserName,
                 Email = user.Email,
                 Password = HashPassword(user.Password),
-                Chats = new List<Chat>(),
+                ChatUser = new List<ChatUser>(),
                 Messages = new List<Message>()
             };
 

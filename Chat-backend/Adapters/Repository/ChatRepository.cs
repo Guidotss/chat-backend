@@ -1,9 +1,9 @@
-﻿using Chat_backend.Entities;
+﻿using Chat_backend.Adapters.Errors;
+using Chat_backend.Entities;
 using Chat_backend.Frameworks___Drivers.Database;
 using Chat_backend.Interfaces;
 using Chat_backend.Interfaces.Dtos;
 using Microsoft.EntityFrameworkCore;
-
 namespace Chat_backend.Adapters.Repository
 {
     public class ChatRepository : IChatRepository
@@ -12,6 +12,7 @@ namespace Chat_backend.Adapters.Repository
         private readonly UserRepository _userRepository;
         private readonly MessageRespository _messageRespository;
         internal readonly DbSet<Chat> dbSet; 
+        
 
 
         public ChatRepository(ApplicationDbContext context)
@@ -19,11 +20,27 @@ namespace Chat_backend.Adapters.Repository
             _context = context; 
             dbSet = context.Set<Chat>();
             _messageRespository = new MessageRespository(context);
-            _userRepository = new UserRepository(context);
+            _userRepository = new UserRepository(context);            
         }
-        public Task AddUserToChat(Guid chatId, Guid userId)
+
+        public async Task AddUserToChat(Guid chatId, Guid userId)
         {
-            throw new NotImplementedException();
+            var chat = await dbSet.FindAsync(chatId);
+            var user = await _userRepository.GetUserById(userId);
+            
+            if (chat == null || user == null)
+            {
+                _ = new HttpError("Chat or user not found", 404);
+            }
+
+            var chatUser = new ChatUser
+            {
+                ChatsId = chatId,
+                UsersId = userId
+            };
+
+            chat.ChatUser.Add(chatUser);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Chat> CreateChat(NewChatDto chat)
@@ -31,12 +48,12 @@ namespace Chat_backend.Adapters.Repository
             var newChat = new Chat
             {
                 Name = chat.Name,
-                Users = new List<User>(),
+                ChatUser = new List<ChatUser>(),
                 Messages = new List<Message>()
             };
 
             await dbSet.AddAsync(newChat);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); 
             return newChat; 
             
         }
@@ -56,9 +73,12 @@ namespace Chat_backend.Adapters.Repository
             throw new NotImplementedException();
         }
 
-        public Task<Chat> GetChatById(int id)
+        public async Task<Chat> GetChatById(Guid id)
         {
-            throw new NotImplementedException();
+            IQueryable<Chat> query = dbSet;
+            query = query.Include("Messages");
+            var chat = query.FirstOrDefault(x => x.Id == id);
+            return chat; 
         }
 
         public Task<IEnumerable<Message>> GetMessagesFromChat(Guid chatId)

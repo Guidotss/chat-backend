@@ -13,6 +13,7 @@ namespace Chat_backend.Adapters.Database
             builder.Property(user => user.Password).IsRequired();
             builder.Property(user => user.Username).IsRequired().HasMaxLength(20); 
             builder.HasIndex(user => user.Email).IsUnique();
+
         }
     }
 }

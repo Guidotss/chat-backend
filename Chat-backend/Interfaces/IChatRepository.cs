@@ -6,7 +6,7 @@ namespace Chat_backend.Interfaces
     public interface IChatRepository
     {
         abstract Task<IEnumerable<Chat>> GetAllChats();
-        abstract Task<Chat> GetChatById(int id);
+        abstract Task<Chat> GetChatById(Guid id);
         abstract Task<Chat> CreateChat(NewChatDto chat);
         abstract Task<Chat> UpdateChat(Chat chat);
         abstract void DeleteChat(Guid id);

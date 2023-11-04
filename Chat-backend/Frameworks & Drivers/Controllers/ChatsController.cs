@@ -16,16 +16,16 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
     public class ChatsController : ControllerBase
     {
         private readonly IChatRepository _chatRepository;
-        private readonly IMessageRepository _messageRepository; 
+        private readonly IMessageRepository _messageRepository;
 
-        public ChatsController(IChatRepository chatRepository, IMessageRepository messageRepository) 
+        public ChatsController(IChatRepository chatRepository, IMessageRepository messageRepository)
         {
             _chatRepository = chatRepository;
             _messageRepository = messageRepository;
         }
         private IActionResult HandleErrors(Exception ex)
         {
-            if(ex is HttpError httpError)
+            if (ex is HttpError httpError)
             {
                 return StatusCode(httpError.StatusCode, new { ok = false, message = httpError.Message });
             }
@@ -33,13 +33,13 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
             return ex switch
             {
                 _ => StatusCode(500, new { ok = false, message = "Internal server errror", error = ex.Message })
-            }; 
+            };
         }
 
         private Guid CheckUUID(string id)
         {
-            bool isValid = Guid.TryParse(id, out Guid result); 
-            if(!isValid)
+            bool isValid = Guid.TryParse(id, out Guid result);
+            if (!isValid)
             {
                 throw new Exception("Invalid UUID");
             }
@@ -51,21 +51,21 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
             var buffer = new byte[1024 * 4];
             WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
-            while(!result.CloseStatus.HasValue)
+            while (!result.CloseStatus.HasValue)
             {
-                var message = Encoding.UTF8.GetString(buffer, 0, result.Count);   
+                var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                 var newMessage = JsonSerializer.Deserialize<NewMessageDto>(message);
-                if(newMessage != null)
+                if (newMessage != null)
                 {
                     await _messageRepository.CreateMessage(newMessage);
                     await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
                     result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 }
-                
+
             }
-            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);    
-        } 
-        
+            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+        }
+
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> CreateNewChat([FromBody] NewChatDto chat)
@@ -77,12 +77,12 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
             }
             catch (Exception ex)
             {
-                return HandleErrors(ex); 
+                return HandleErrors(ex);
             }
         }
 
         [HttpGet]
-        [Route("messages")] 
+        [Route("messages")]
         public async Task<IActionResult> CreateNewMessage()
         {
             try
@@ -97,8 +97,8 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
                     return BadRequest(new { ok = false, message = "Websocket connection is required" });
                 }
 
-                return Ok();  
-            }catch(Exception ex)
+                return Ok();
+            } catch (Exception ex)
             {
                 return HandleErrors(ex);
             }
@@ -106,15 +106,15 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
 
         [HttpPost]
         [Route("add-user")]
-        public async Task<IActionResult> AddUserToChat([FromBody] AddUserToChatDto newUser) 
+        public async Task<IActionResult> AddUserToChat([FromBody] AddUserToChatDto newUser)
         {
             try
             {
                 await _chatRepository.AddUserToChat(newUser.ChatId, newUser.UserId);
                 return Ok(new { ok = true, message = "User added to chat" });
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
-                return HandleErrors(ex); 
+                return HandleErrors(ex);
             }
         }
 
@@ -127,14 +127,14 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
             {
                 Guid idParsed = CheckUUID(id);
                 var chat = await _chatRepository.GetChatById(idParsed);
-                if(chat == null)
+                if (chat == null)
                 {
                     return BadRequest(new { ok = false, message = "Chat not found" });
                 }
 
 
                 var chatUsersIds = chat.ChatUsers.Select(chatUser => chatUser.UserId);
-                var chatMessages = chat.Messages.Select(message => new MessageDto{ Id = message.Id, Content = message.Content, UserId = message.UserId });
+                var chatMessages = chat.Messages.Select(message => new MessageDto { Id = message.Id, Content = message.Content, UserId = message.UserId });
                 var response = new GetChatByIdResponseDto
                 {
                     Name = chat.Name,
@@ -142,14 +142,30 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
                     UsersId = chatUsersIds.ToArray(),
                 };
 
-                return Ok(new { ok = true, chat = response }); 
-   
+                return Ok(new { ok = true, chat = response });
 
-            }catch(Exception ex)
+
+            } catch (Exception ex)
             {
-                return HandleErrors(ex); 
+                return HandleErrors(ex);
             }
         }
+
+        [HttpPut]
+        [Route("update")]
+        public async Task<IActionResult> UpdateChat([FromBody] UpdateChatDto chat)
+        {
+            try
+            {
+                var updatedChat = await _chatRepository.UpdateChat(chat);
+                return Ok(new { ok = true, chat = updatedChat });
+
+            } catch(Exception ex)
+            {
+                return HandleErrors(ex);
+            }   
+        }
+
 
         [HttpDelete]
         [Route("{chatId}/users/{userId}")]
@@ -168,5 +184,7 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
                 return HandleErrors(ex); 
             }
         }
+
+
     }
 }

@@ -9,10 +9,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Chat_backend.Adapters.Migrations
+namespace Chat_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231101141610_AllTablesCreated")]
+    [Migration("20231104173828_AllTablesCreated")]
     partial class AllTablesCreated
     {
         /// <inheritdoc />
@@ -25,21 +25,6 @@ namespace Chat_backend.Adapters.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ChatUser", b =>
-                {
-                    b.Property<Guid>("ChatsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UsersId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ChatsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("ChatUser");
-                });
-
             modelBuilder.Entity("Chat_backend.Entities.Chat", b =>
                 {
                     b.Property<Guid>("Id")
@@ -51,9 +36,29 @@ namespace Chat_backend.Adapters.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Chat");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("Chat_backend.Entities.ChatUser", b =>
+                {
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ChatId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatUser");
                 });
 
             modelBuilder.Entity("Chat_backend.Entities.Message", b =>
@@ -70,10 +75,7 @@ namespace Chat_backend.Adapters.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -113,19 +115,30 @@ namespace Chat_backend.Adapters.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ChatUser", b =>
+            modelBuilder.Entity("Chat_backend.Entities.Chat", b =>
                 {
-                    b.HasOne("Chat_backend.Entities.Chat", null)
-                        .WithMany()
-                        .HasForeignKey("ChatsId")
+                    b.HasOne("Chat_backend.Entities.User", null)
+                        .WithMany("Chats")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Chat_backend.Entities.ChatUser", b =>
+                {
+                    b.HasOne("Chat_backend.Entities.Chat", "Chat")
+                        .WithMany("ChatUser")
+                        .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Chat_backend.Entities.User", null)
+                    b.HasOne("Chat_backend.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Chat_backend.Entities.Message", b =>
@@ -138,16 +151,22 @@ namespace Chat_backend.Adapters.Migrations
 
                     b.HasOne("Chat_backend.Entities.User", null)
                         .WithMany("Messages")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Chat_backend.Entities.Chat", b =>
                 {
+                    b.Navigation("ChatUser");
+
                     b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Chat_backend.Entities.User", b =>
                 {
+                    b.Navigation("Chats");
+
                     b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618

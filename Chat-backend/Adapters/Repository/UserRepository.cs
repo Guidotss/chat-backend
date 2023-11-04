@@ -3,8 +3,6 @@ using Chat_backend.Frameworks___Drivers.Database;
 using Chat_backend.Interfaces;
 using Chat_backend.Interfaces.Dtos;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 
 namespace Chat_backend.Adapters.Repository
 {
@@ -31,7 +29,7 @@ namespace Chat_backend.Adapters.Repository
                 Username = user.UserName,
                 Email = user.Email,
                 Password = HashPassword(user.Password),
-                ChatUser = new List<ChatUser>(),
+                Chats = new List<Chat>(),
                 Messages = new List<Message>()
             };
 

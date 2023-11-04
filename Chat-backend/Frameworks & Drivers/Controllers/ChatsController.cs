@@ -131,10 +131,19 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
                 {
                     return BadRequest(new { ok = false, message = "Chat not found" });
                 }
-                
-                
-    
-                return Ok(new { ok = true,chat });
+
+
+                var chatUsersIds = chat.ChatUsers.Select(chatUser => chatUser.UserId);
+                var chatMessages = chat.Messages.Select(message => new MessageDto{ Id = message.Id, Content = message.Content, UserId = message.UserId });
+                var response = new GetChatByIdResponseDto
+                {
+                    Name = chat.Name,
+                    Messages = chatMessages.ToArray(),
+                    UsersId = chatUsersIds.ToArray(),
+                };
+
+                return Ok(new { ok = true, chat = response }); 
+   
 
             }catch(Exception ex)
             {

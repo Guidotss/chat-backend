@@ -8,15 +8,9 @@ namespace Chat_backend.Adapters.Database
     {
         public void Configure(EntityTypeBuilder<ChatUser> builder)
         {
-            builder.HasKey(builder => new { builder.ChatsId, builder.UsersId }); 
-
-            builder.HasOne(chatUser => chatUser.Chat)
-                .WithMany(chat => chat.ChatUser)
-                .HasForeignKey(chatUser => chatUser.ChatsId);
-
-            builder.HasOne(chatUser => chatUser.User)
-                .WithMany(user => user.ChatUser)
-                .HasForeignKey(chatUser => chatUser.UsersId);
+            builder.HasKey(builder => new { builder.ChatId, builder.UserId }); 
+            builder.Property(builder => builder.ChatId).IsRequired();
+            builder.Property(builder => builder.UserId).IsRequired();
 
         }
     }

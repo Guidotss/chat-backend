@@ -9,6 +9,6 @@ namespace Chat_backend.Entities
         public string Email { get; set; } = default!;    
         public string Password { get; set; } = default!;
         virtual public ICollection<Message> Messages { get; set; } = new List<Message>();
-        virtual public ICollection<ChatUser> ChatUser { get; set; } = new List<ChatUser>();
+        virtual public ICollection<Chat> Chats { get; set; } = new List<Chat>();
     }
 }

@@ -2,10 +2,7 @@
 {
     public class ChatUser
     {
-        public Guid ChatsId { get; set; }
-        public Chat Chat { get; set; } = default!;
-
-        public User User { get; set; } = default!;
-        public Guid UsersId { get; set; }
+        public Guid ChatId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

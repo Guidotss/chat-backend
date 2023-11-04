@@ -35,11 +35,11 @@ namespace Chat_backend.Adapters.Repository
 
             var chatUser = new ChatUser
             {
-                ChatsId = chatId,
-                UsersId = userId
+                ChatId = chatId,
+                UserId = userId
             };
 
-            chat.ChatUser.Add(chatUser);
+            chat.ChatUsers.Add(chatUser);
             await _context.SaveChangesAsync();
         }
 
@@ -48,14 +48,11 @@ namespace Chat_backend.Adapters.Repository
             var newChat = new Chat
             {
                 Name = chat.Name,
-                ChatUser = new List<ChatUser>(),
-                Messages = new List<Message>()
-            };
-
+                Messages = new List<Message>(),
+            }; 
             await dbSet.AddAsync(newChat);
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
             return newChat; 
-            
         }
 
         public Task<Message> CreateMessage(Message message)
@@ -77,8 +74,16 @@ namespace Chat_backend.Adapters.Repository
         {
             IQueryable<Chat> query = dbSet;
             query = query.Include("Messages");
+            query = query.Include("ChatUsers"); 
+            
             var chat = query.FirstOrDefault(x => x.Id == id);
+            if (chat == null)
+            {
+                _ = new HttpError("Chat not found", 404);
+            }
+
             return chat; 
+            
         }
 
         public Task<IEnumerable<Message>> GetMessagesFromChat(Guid chatId)

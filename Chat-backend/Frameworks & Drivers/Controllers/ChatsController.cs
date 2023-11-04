@@ -150,6 +150,23 @@ namespace Chat_backend.Frameworks___Drivers.Controllers
                 return HandleErrors(ex); 
             }
         }
-        
+
+        [HttpDelete]
+        [Route("{chatId}/users/{userId}")]
+        public async Task<IActionResult> DeleteChat()
+        {
+            string chatId = HttpContext.Request.RouteValues["chatId"]?.ToString()!;
+            string userId = HttpContext.Request.RouteValues["userId"]?.ToString()!;
+            try
+            {
+                Guid chatIdParsed = CheckUUID(chatId);
+                Guid userIdParsed = CheckUUID(userId);
+                await _chatRepository.RemoveUserFromChat(chatIdParsed, userIdParsed);
+                return Ok(new { ok = true, message = "User removed from chat" });
+            }catch(Exception ex)
+            {
+                return HandleErrors(ex); 
+            }
+        }
     }
 }

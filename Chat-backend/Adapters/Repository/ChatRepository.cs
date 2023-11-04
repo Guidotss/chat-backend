@@ -55,21 +55,14 @@ namespace Chat_backend.Adapters.Repository
             return newChat; 
         }
 
-        public Task<Message> CreateMessage(Message message)
+        public async void DeleteChat(Guid id)
         {
-            throw new NotImplementedException();
+            var chat = await dbSet.FindAsync(id);
+            dbSet.Remove(chat);
+            _context.SaveChanges();
         }
 
-        public void DeleteChat(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Chat>> GetAllChats()
-        {
-            throw new NotImplementedException();
-        }
-
+        public async Task<IEnumerable<Chat>> GetAllChats() => dbSet.ToList();
         public async Task<Chat> GetChatById(Guid id)
         {
             IQueryable<Chat> query = dbSet;
@@ -86,24 +79,37 @@ namespace Chat_backend.Adapters.Repository
             
         }
 
-        public Task<IEnumerable<Message>> GetMessagesFromChat(Guid chatId)
+        public async Task RemoveUserFromChat(Guid chatId, Guid userId)
         {
-            throw new NotImplementedException();
+            var chat = await dbSet.FindAsync(chatId);
+            var user = await _userRepository.GetUserById(userId);
+
+            if (chat == null || user == null)
+            {
+                _ = new HttpError("Chat or user not found", 404);
+            }
+            
+            
+            _context.ChatUser.Remove(new ChatUser { ChatId = chatId, UserId = userId });
+            _context.SaveChanges(); 
         }
 
-        public Task<IEnumerable<User>> GetUsersFromChat(Guid chatId)
+        public async Task<Chat> UpdateChat(UpdateChatDto chat)
         {
-            throw new NotImplementedException();
-        }
+            var chatFromDb = dbSet.Find(chat.Id);
+            if (chatFromDb == null)
+            {
+                _ = new HttpError("Chat not found", 404);
+            }
 
-        public Task RemoveUserFromChat(Guid chatId, Guid userId)
-        {
-            throw new NotImplementedException();
-        }
+            if (chat.Name != null)
+            {
+                chatFromDb.Name = chat.Name;
+            }
 
-        public Task<Chat> UpdateChat(Chat chat)
-        {
-            throw new NotImplementedException();
+            dbSet.Update(chatFromDb);
+            _context.SaveChanges();
+            return chatFromDb;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Chat_backend.Adapters.Repository
         private readonly ApplicationDbContext _context;
         internal readonly DbSet<User> dbSet;
 
-        private string HashPassword(string password)
+        private static string HashPassword(string password)
         {
             var hash = BCrypt.Net.BCrypt.HashPassword(password);
             return hash;

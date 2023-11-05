@@ -10,7 +10,6 @@ namespace Chat_backend.Adapters.Repository
     {
         private readonly ApplicationDbContext _context;
         private readonly UserRepository _userRepository;
-        private readonly MessageRespository _messageRespository;
         internal readonly DbSet<Chat> dbSet; 
         
 
@@ -19,7 +18,6 @@ namespace Chat_backend.Adapters.Repository
         {
             _context = context; 
             dbSet = context.Set<Chat>();
-            _messageRespository = new MessageRespository(context);
             _userRepository = new UserRepository(context);            
         }
 

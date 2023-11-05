@@ -28,6 +28,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(builder => builder
+       .AllowAnyOrigin()
+       .WithMethods("GET", "POST", "PUT", "DELETE")
+       .WithHeaders("accept", "content-type", "origin", "X-custom-header"));
 
 app.UseWebSockets(); 
 
